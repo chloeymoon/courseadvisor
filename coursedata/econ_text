@@ -1,0 +1,228 @@
+{
+ "S18": [
+  {
+   "name": "ECON 101 01 - Principles of Microeconomics"
+  },
+  {
+   "name": "ECON 101 02 - Principles of Microeconomics"
+  },
+  {
+   "name": "ECON 101 03 - Principles of Microeconomics"
+  },
+  {
+   "name": "ECON 101 04 - Principles of Microeconomics"
+  },
+  {
+   "name": "ECON 102 01 - Principles of Macroeconomics"
+  },
+  {
+   "name": "ECON 102 02 - Principles of Macroeconomics"
+  },
+  {
+   "name": "ECON 102 03 - Principles of Macroeconomics"
+  },
+  {
+   "name": "ECON 102 04 - Principles of Macroeconomics"
+  },
+  {
+   "name": "ECON 103 01 - Intro Prob&Stats Methds w/Lab"
+  },
+  {
+   "name": "ECON 103 02 - Intro Prob&Statistical Methods"
+  },
+  {
+   "name": "ECON 103 03 - Intro Prob&Statis Methds w/Lab"
+  },
+  {
+   "name": "ECON 103 1LA - LAB: Intro Prob&Stat Methods"
+  },
+  {
+   "name": "ECON 103 1LB - LAB: Intro Prob&Stat Methods"
+  },
+  {
+   "name": "ECON 103 2LA - LAB: Intro Prob&Stat Methods"
+  },
+  {
+   "name": "ECON 103 2LB - LAB: Intro Prob&Stat Methods"
+  },
+  {
+   "name": "ECON 103 3LA - LAB:Prob&Statistical Methods"
+  },
+  {
+   "name": "ECON 103 3LB - LAB: Prob&Statistical Methods"
+  },
+  {
+   "name": "ECON 201 01 - Intermediate Micro Analysis"
+  },
+  {
+   "name": "ECON 201 02 - Intermediate Micro Analysis"
+  },
+  {
+   "name": "ECON 202 01 - Intermediate Macro Analysis"
+  },
+  {
+   "name": "ECON 202 02 - Intermediate Macro Analysis"
+  },
+  {
+   "name": "ECON 202 03 - Intermediate Macro Analysis"
+  },
+  {
+   "name": "ECON 203 01 - Econometrics"
+  },
+  {
+   "name": "ECON 203 02 - Econometrics"
+  },
+  {
+   "name": "ECON 203 03 - Econometrics"
+  },
+  {
+   "name": "ECON 222 01 - Games of Strategy"
+  },
+  {
+   "name": "ECON 243 01 - Pol Econ of Gender,Race,&Class"
+  },
+  {
+   "name": "ECON 313 01 - Sem: Internatl Macroeconomics"
+  },
+  {
+   "name": "ECON 318 01 - Econ Analysis Social Policy"
+  },
+  {
+   "name": "ECON 322 01 - Strategy & Information"
+  },
+  {
+   "name": "ECON 323 01 - Finance Theory & Applications"
+  },
+  {
+   "name": "ECON 327 01 - Econ Law, Policy, Inequality"
+  },
+  {
+   "name": "ECON 328 01 - Environment and Development"
+  },
+  {
+   "name": "ECON 334 01 - Domestic Macroeconomic Policy"
+  },
+  {
+   "name": "ECON 335 01 - CSPW: Economic Journalism"
+  },
+  {
+   "name": "ECON 341 01 - Industrial Organization"
+  },
+  {
+   "name": "ECON 380 01 - Economics Research Seminar"
+  }
+ ],
+ "F17": [
+  {
+   "name": "ECON 101 01 - Principles of Microeconomics"
+  },
+  {
+   "name": "ECON 101 02 - Principles of Microeconomics"
+  },
+  {
+   "name": "ECON 101 03 - Principles of Microeconomics"
+  },
+  {
+   "name": "ECON 101 04 - Principles of Microeconomics"
+  },
+  {
+   "name": "ECON 101 05 - Principles of Microeconomics"
+  },
+  {
+   "name": "ECON 102 01 - Principles of Macroeconomics"
+  },
+  {
+   "name": "ECON 102 02 - Principles of Macroeconomics"
+  },
+  {
+   "name": "ECON 102 03 - Principles of Macroeconomics"
+  },
+  {
+   "name": "ECON 103 01 - Intro Prob&Statistical Methods"
+  },
+  {
+   "name": "ECON 103 02 - Intro Prob&Statistical Methods"
+  },
+  {
+   "name": "ECON 103 03 - Intro Prob&Statistical Methods"
+  },
+  {
+   "name": "ECON 103 1LA - LAB: Prob&Statistical Methods"
+  },
+  {
+   "name": "ECON 103 1LB - LAB: Prob&Statistical Methods"
+  },
+  {
+   "name": "ECON 103 2LA - LAB: Prob&Statistical Methods"
+  },
+  {
+   "name": "ECON 103 2LB - LAB: Prob&Statistical Methods"
+  },
+  {
+   "name": "ECON 103 3LA - Intro Prob&Statistical Methods"
+  },
+  {
+   "name": "ECON 103 3LB - Intro Prob&Statistical Methods"
+  },
+  {
+   "name": "ECON 201 01 - Intermediate Micro Analysis"
+  },
+  {
+   "name": "ECON 201 02 - Intermediate Micro Analysis"
+  },
+  {
+   "name": "ECON 202 01 - Intermediate Macro Analysis"
+  },
+  {
+   "name": "ECON 202 02 - Intermediate Macro Analysis"
+  },
+  {
+   "name": "ECON 203 01 - Econometrics"
+  },
+  {
+   "name": "ECON 203 02 - Econometrics"
+  },
+  {
+   "name": "ECON 203 03 - Econometrics"
+  },
+  {
+   "name": "ECON 213 01 - Int'l Finance & Macro Policy"
+  },
+  {
+   "name": "ECON 220 01 - Development Economics"
+  },
+  {
+   "name": "ECON 229 01 - Women in the Economy"
+  },
+  {
+   "name": "ECON 241 01 - Poverty & Inequality Latin Am."
+  },
+  {
+   "name": "ECON 301 01 - Adv. Microeconomic Analysis"
+  },
+  {
+   "name": "ECON 303 01 - Advanced Econometrics"
+  },
+  {
+   "name": "ECON 306 01 - Hist Econ Organizations in US"
+  },
+  {
+   "name": "ECON 312 01 - The Economics of Globalization"
+  },
+  {
+   "name": "ECON 314 01 - International Trade Theory"
+  },
+  {
+   "name": "ECON 320 01 - Economic Development"
+  },
+  {
+   "name": "ECON 324 01 - Behavioral Economics"
+  },
+  {
+   "name": "ECON 326 01 - Sem: Adv. Econ of Education"
+  },
+  {
+   "name": "ECON 380 01 - Economics Research Seminar"
+  }
+ ]
+}
