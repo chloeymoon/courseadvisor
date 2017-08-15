@@ -208,3 +208,197 @@ function Minor (minUnits, reqCourses, electives, min300, complete){
 var ECONminor = {
   minUnits:
 }
+
+var getReqArray = function(major){
+  if(major.required_sets.type==="set"){
+    if(major.required_sets.rules.ALL){
+      var start = major.required_sets.rules.ALL // in this case ["200","300"]
+      Courses.find({
+        number: {
+          $gte: Number(start[0]) // eventually loop through it again, but in this case: 200
+        }
+      })
+    }
+
+    // Courses.find({
+    //   number: {
+    //     $gte: Number(start[0]),
+    //     $lte: Number(start[0]) + 99
+    //   }
+    // })
+
+    // will return an array of courses w/ a course number greater than the lower # of "ALL" array
+    // remove "NOT", "courses" is an array that's returned
+    .then((courses) => {
+      if(set.rules.NOT){
+        const filtered = courses.filter((course) => {
+          if(set.rules.NOT.some((crs) => crs === course)){
+            return false
+          }
+          return true
+        }) // will return an array without NOT courses
+        return filtered
+      }
+      // is this necessary????
+      else {
+        const filtered = courses
+        return filtered
+      }
+    })
+    // add "OR"
+    .then((filtered) => {
+      if(set.rules.OR){
+        set.rules.OR.forEach((crs) => {
+          filtered.push(crs)
+        })
+        return filtered
+      }
+    })
+  } else if(set.type==="explicit") {
+    Courses.find({
+      number: major.require_sets.courses.num
+      dept: major.require_sets.courses.dept
+    })
+  }
+}
+
+
+
+//for example, for economics
+//looping through all economics requirements array (sets)
+// const ECONreqArray = majorReq.ECON.required_sets
+// for(let c=0; c<ECONreqArray.length; c++){
+//   const set = ECONreqArray[c]
+//   if(set.type === "explicit"){
+//     // console.log('ECON req, explicit:', set.course)
+//     MyCourse.find({
+//       dept: set.course.split(' ')[0],
+//       num: set.course.split(' ')[1]
+//     })
+//     .then((resp) => {
+//       // console.log('85 explicit ECON courses in MyCourse:', resp)
+// // [ { _id: 598a0614194d581d33d06c49, dept: 'ECON', num: 101, __v: 0 } ]
+//       for(let d=0; d<resp.length; d++){
+//         const thisCourse = resp[d].dept + ' ' + resp[d].num
+//         // console.log('89 thisCourse', thisCourse)
+//         if(set.course === thisCourse){
+//           set.completed = true
+//           // console.log('92 after completed = true:', set)
+//         }
+//       }
+//       //here ECON101: true
+//       console.log('98 updated withCompleted', majorReq.ECON.required_sets)
+//     })
+//   } else if(set.type === "set"){
+//     MyCourse.find
+//   }
+// }
+
+
+
+
+// const check = function(major){
+//   const majorObj = majorReq[major]
+//   console.log('majorObj:', majorObj.required_sets)
+//   for(let k=0; k < majorObj.required_sets.length; k++){
+//     const set = majorObj.required_sets[k]
+//     console.log('set',set)
+//     if(set.type==="explicit"){
+//       // console.log('mongoose courses', Course)
+//       const expCourse = Course.find({
+//         dept: set.course.split(' ')[0],
+//         num: set.course.split(' ')[1]
+//       }) // async
+//       //callback - save
+//       // whitelist.push(expCourse)
+//       //// works until here! git pushed
+//     } else if(set.type==="set"){
+//       if(set.rules.ALL){
+//         const start = set.rules.ALL
+//         const allCourses = Course.find({
+//           dept: major,
+//           num: {
+//             $gte : Number(start[0])
+//         }
+//       })
+//     }
+//     if(set.rules.NOT){
+//       const excludingCourses = Course.find({
+//         dept: set.course.split(' ')[0],
+//         num: set.course.split(' ')[1]
+//       })
+//     }
+//     if(set.rules.OR){
+//       const orCourses = Course.find({
+//
+//       })
+//     }
+//   }
+// }
+// }
+//
+
+
+
+
+
+
+
+// find user's course array and check if each course satisfies
+User.findOne({lastName: "Moon", firstName: "Chloe", testingMajor: "ECON"})
+.then(async (user) => { // user model obj
+  const userCourse = await sort('598cc0ac4ac74437f569f4a3') // sorted course array
+  //userCourse = [{"num":303,"dept":"ECON"},{"num":220,"dept":"ECON"}]
+  userCourse.forEach((coursename) => {
+    // coursename =  { num: 303, dept: 'ECON' } // { num: 220, dept: 'ECON' }
+    if(majorReq[user.testingMajor]){
+      const sets = majorReq[user.testingMajor].required_sets
+      // sets = econ required_sets array
+      sets.forEach((set) => {
+        // console.log('EACH SET HERE: ', set)
+        const courseSt = coursename.dept + ' ' + coursename.num
+        if(set.type === "explicit"){
+          if(set.course === courseSt){
+           set.completed = true
+         } // works till here (8/9)
+        } else if(set.type === "set"){
+          //set functions here!!!
+          ///////////// ALL //////////////////
+          if(set.rules.ALL){
+            //if the course is in NOT, return false; else - // also, +99 instead of this
+            let cond1 = coursename.dept === user.testingMajor
+            let cond2 = (Number(coursename.num) > Number(set.rules.ALL[0])) && (Number(coursename.num) < Number(set.rules.ALL[0]) + 99)
+            // let cond2 = false
+            // set.rules.ALL.forEach((level, index) => {
+            if (cond1 && cond2) {
+              // console.log('SET + coursename HERE', set, coursename)
+              if(set.rules.NOT){
+                //loop through not array and if this course is not in this array, return true, otherwise return false
+                set.rules.NOT.forEach((course) => {
+                  if(course !== courseSt){
+                    console.log('SET line 166', set, 'COURSEST', courseSt, 'COURSE', course)
+                    set.completed = true
+                    set.slot = coursename
+                    console.log('SET line 168', set, 'COURSEST', courseSt, 'COURSE', course)
+                  }
+                  return false
+                })
+              }
+            } else {return false}
+            // })
+          }
+          ///////////// NOT ///////////////
+          // if(set.rules.NOT){
+          //   // console.log('NOT SETS', set.rules.NOT)
+          //   // console.log('coursename', coursename)
+          //   if(set.course !== courseSt){
+          //     console.log('NOT is working', courseSt)
+          //     return true
+          //   }
+          //   console.log('NOT is NOT working', courseSt)
+          //   return false
+          // }
+        }
+      })
+    }
+  })

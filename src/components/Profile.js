@@ -1,132 +1,321 @@
-// Profile page: user selects semester, department, and courses they've taken
-// and it saves the information to the database
+import React from 'react';
+import ReactDOM from 'react-dom';
+import {BrowserRouter, Link, Route, Redirect} from 'react-router-dom';
 
-import React, { Component } from 'react';
-import '../css/Profile.css';
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import AppBar from 'material-ui/AppBar';
+import FlatButton from 'material-ui/FlatButton';
+import TextField from 'material-ui/TextField';
+import DropDownMenu from 'material-ui/DropDownMenu';
+import MenuItem from 'material-ui/MenuItem';
 
-const fakeData = [{'fall17':{'courseinfo':'ECON101','coursename':'intro to micro'}},
-{'spring17':{'courseinfo':'ECON102','coursename':'intro to macro'}},
-{'fall16':{'courseinfo':'ECON103','coursename':'intro to stat'}},
-{'spring16':{'courseinfo':'ARTS108','coursename':'intro to photography'}},
-{'fall15':{'courseinfo':'MATH205','coursename':'multivariable'}},
-{'spring15':{'courseinfo':'PSYCH101','coursename':'intro to psych'}}]
+import uuid from 'uuid/v4';
+import injectTapEventPlugin from 'react-tap-event-plugin';
+injectTapEventPlugin();
 
-class Profile extends Component {
+require('../css/login-reg.css');
+
+const styles = {
+  errorStyle: {
+    color: '#01579B',
+  },
+  underlineStyle: {
+    borderColor: '#01579B',
+  },
+  floatingLabelStyle: {
+    color: 'white',
+  },
+  floatingLabelFocusStyle: {
+    color: '#01579B',
+  },
+  underlineFocusStyle: {
+    borderColor: '#01579B',
+  },
+  buttons: {
+    width: '100px',
+    margin: '2px',
+    color: 'black',
+    backgroundColor: 'white'
+  },
+  customWidth: {
+    width: 200,
+  },
+};
+
+
+class Profile extends React.Component {
   constructor(props){
-    super(props)
-    this.state={
-      semester:{
-        semName:'',
-        courses:[]
-      }
-      // {'falll17':['ECON 101', 'ECON 102', 'ECON103', 'CHIN101']}
-    }
+    super(props);
+    this.state = {
+      courses: {}
+    };
+    this.handleDeptChange = this.handleDeptChange.bind(this);
+  }
+  componentDidMount(){
+    // axios call
+    // .then( this.setState({courses: something here ) )
+    fetch('/api/getcourse', {
+      method: 'POST',
+      credentials: 'include',
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        courses: this.state.courses
+      })
+    }).then((response)  => {
+      console.log('resp for api/getcourse here', response);
+      return (response.json());
+    }).then((obj)=>{
+      console.log('api/getcourse resp courses obj here', obj);
+      this.setState({courses: obj});
+    });
+  }
+  //dropdown menu
+  handleDeptChange(key, event, index, value) {
+    const newDept = value;
+    const coursesCopy = Object.assign({}, this.state.courses);
+    console.log('value here', value);
+    console.log('newDept here', newDept);
+    console.log('coursesCopy here + key', coursesCopy, key);
+    coursesCopy[key].dept = newDept;
+    this.setState({courses: coursesCopy});
+    console.log('new dept added', coursesCopy);
+  }
+  //input field
+  handleCourseNumChange(key, e) {
+    const newNum = e.target.value;
+    const coursesCopy = Object.assign({}, this.state.courses);
+    coursesCopy[key].number = newNum;
+    this.setState({courses: coursesCopy});
+    console.log('new num added', coursesCopy);
   }
 
-  // formSubmit(){
-  //   this.setState({semester.semName: e.target.value})
-  // }
+  handleSubmit(key){
+    const courseRow = this.state.courses[key];
+    console.log('courseRow added:', courseRow);
+    console.log('this.state.courses updated:', this.state.courses);
+    fetch('/api/updatecourse', {
+      method: 'POST',
+      credentials: 'include',
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        courses: this.state.courses[key]
+      })
+    }).then((response) => {
+      console.log("resp");
+      return (response.json());
+    }).then((obj)=>{
+      console.log('profile.js user obj here', obj);
+      return obj;
+    }).catch((err)=>{
+      console.log('err fetching api/updatecourse', err);
+    });
+  }
 
+  handleDelete(key){
+    const courseRow = this.state.courses[key];
+    console.log('courseRow added:', courseRow);
+    console.log('this.state.courses updated:', this.state.courses);
+    fetch('/api/deletecourse', {
+      method: 'POST',
+      credentials: 'include',
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        courses: this.state.courses[key]
+      })
+    }).then((response) => {
+      return (response.json());
+    }).then((obj)=>{
+      console.log('profile.js user obj here', obj);
+      return obj;
+    }).catch((err)=>{
+      console.log('err fetching api/updatecourse', err);
+    });
+  }
 
-  // componentDidMount(){
-  //   fetch('http://...url', {
-  //     method: 'GET',
-  //     credentials: 'include',
-  //     success: function(data){}
-  //   }).then((response)=>{
-  //     return (response.json())
-  //   }).then((courseobj)=>{
-  //     this.setState({courses: courseobj})
-  //     console.log('courses obj here', courseobj)
-  //   }).catch(err) => {
-  //     console.log('error, profile.js line34', err)
-  //   }
-  // }
+  //each input row (dept, number, save)
+  courseField(key){
+    return (
+        <div key={key}>
+          <MuiThemeProvider>
+          <DropDownMenu value={this.state.courses[key].dept}
+            onChange={this.handleDeptChange.bind(this, key)}
+            openImmediately={false}
+            autoWidth={true}
+            maxHeight={300}>
+            <MenuItem value="Department" primaryText="Department" />
+            <MenuItem value="AFR" primaryText="Africana Studies" />
+            <MenuItem value="AMST" primaryText="American Studies" />
+            <MenuItem value="ANTH" primaryText="Anthropology" />
+            <MenuItem value="ART" primaryText="Art" />
+            <MenuItem value="ASTR" primaryText="Astronomy" />
+            <MenuItem value="BIOC" primaryText="Biochemistry" />
+            <MenuItem value="BISC" primaryText="Biological Sciences" />
+            <MenuItem value="CHEM" primaryText="Chemistry" />
+            <MenuItem value="CAMS" primaryText="Cinema and Media Studies" />
+            <MenuItem value="CLST" primaryText="Classical Studies" />
+            <MenuItem value="CLSC" primaryText="Cognitive and Linguistic Sci" />
+            <MenuItem value="CPLT" primaryText="Comparative Literature" />
+            <MenuItem value="CS" primaryText="Computer Science" />
+            <MenuItem value="EALC" primaryText="East Asian Languages and Culture" />
+            <MenuItem value="ECON" primaryText="Economics" />
+            <MenuItem value="EDUC" primaryText="Education" />
+            <MenuItem value="ENG" primaryText="English" />
+            <MenuItem value="ES" primaryText="Environmental Studies" />
+            <MenuItem value="EXTD" primaryText="Environmental Studies" />
+            <MenuItem value="FREN" primaryText="French" />
+            <MenuItem value="GEOS" primaryText="Geosciences" />
+            <MenuItem value="GER" primaryText="German" />
+            <MenuItem value="HIST" primaryText="History" />
+            <MenuItem value="ITST" primaryText="Italian Studies" />
+            <MenuItem value="JWST" primaryText="Jewish Studies" />
+            <MenuItem value="MATH" primaryText="Mathematics" />
+            <MenuItem value="MAS" primaryText="Media Arts & Sciences" />
+            <MenuItem value="ME/R" primaryText="Medieval Renaissance Studies" />
+            <MenuItem value="MES" primaryText="Middle Eastern Studies" />
+            <MenuItem value="MUS" primaryText="Music" />
+            <MenuItem value="NEUR" primaryText="Neuroscience" />
+            <MenuItem value="PEAC" primaryText="Peace and Justice Studies" />
+            <MenuItem value="PHIL" primaryText="Philosophy" />
+            <MenuItem value="PHYS" primaryText="Physics" />
+            <MenuItem value="POLS" primaryText="Political Science" />
+            <MenuItem value="PSYC" primaryText="Psychology" />
+            <MenuItem value="QR" primaryText="Quantitative Reasoning" />
+            <MenuItem value="REL" primaryText="Religion" />
+            <MenuItem value="RUSS" primaryText="Russian" />
+            <MenuItem value="SOC" primaryText="Sociology" />
+            <MenuItem value="SAS" primaryText="South Asia Studies" />
+            <MenuItem value="SPAN" primaryText="Spanish" />
+            <MenuItem value="SUST" primaryText="Sustainability" />
+            <MenuItem value="THST" primaryText="Theatre Studies" />
+            <MenuItem value="WGST" primaryText="Women's and Gender Studies" />
+            <MenuItem value="WRIT" primaryText="Writing" />
+          </DropDownMenu>
+          </MuiThemeProvider>
+        <MuiThemeProvider>
+          <TextField
+            id="numinput"
+            type="text"
+            onChange={(e) => this.handleCourseNumChange(key,e)}
+            value={this.state.courses[key].number}
+            placeholder="Course Number"
+        />
+        </MuiThemeProvider>
+        <MuiThemeProvider>
+          <FlatButton
+            id="coursesavebutton"
+            style={styles.buttons}
+            label="Save"
+            hoverColor={'#E8EAF6'}
+            onClick={() => this.handleSubmit(key)}
+          />
+        </MuiThemeProvider>
+        <MuiThemeProvider>
+          <FlatButton
+            id="coursesavebutton"
+            style={styles.buttons}
+            label="Delete"
+            hoverColor={'#E8EAF6'}
+            onClick={() => this.handleDelete(key)}
+          />
+        </MuiThemeProvider>
+        </div>
+    );
+  }
 
-  // selectSemester()
-  //
-  // selectDepartment()
-
-  render() {
+  render(){
     return (
       <div>
-        <div>Add Classes</div>
-        <form>
-      <div class="formsection">
-        {/* onChange="this.form.submit();" */}
-        <select id="semester"  class="w-select filter_selecter" name="semester">
-          <option value="201709"  selected  >Fall 2017</option>
-          <option value="201707"  >Summer II 2017</option>
-          <option value="201706"  >Summer I 2017</option>
-          <option value="201702"  >Spring 2017</option>
-          <option value="201609"  >Fall 2016</option>
-          <option value="201607"  >Summer II 2016</option>
-          <option value="201606"  >Summer I 2016</option>
-          <option value="201602"  >Spring 2016</option>
-          <option value="201509"  >Fall 2015</option>
-          <option value="201507"  >Summer II 2015</option>
-          <option value="201506"  >Summer I 2015</option>
-          <option value="201502"  >Spring 2015</option>
-          <option value="201409"  >Fall 2014</option>
-        </select>
-      </div>
-        {/* onClick="javascript:resetSubject(this.form)" */}
-      <div class="formsection">
-        <select id="department" class="w-select filter_selecter" name="department" >
-          <option value="All" selected >All Departments</option>
-          <option value="AFR"  >Africana Studies</option>
-          <option value="AMST"  >American Studies</option>
-          <option value="ANTH"  >Anthropology</option>
-          <option value="ART"  >Art</option>
-          <option value="ASTR"  >Astronomy</option>
-          <option value="BIOC"  >Biochemistry</option>
-          <option value="BISC"  >Biological Sciences</option>
-          <option value="CHEM"  >Chemistry</option>
-          <option value="CAMS"  >Cinema and Media Studies</option>
-          <option value="CLST"  >Classical Studies</option>
-          <option value="CLSC"  >Cognitive and Linguistic Sci</option>
-          <option value="CPLT"  >Comparative Literature</option>
-          <option value="CS"   >Computer Science</option>
-          <option value="EALC"  >East Asian Languages and Cult</option>
-          <option value="ECON"  >Economics</option>
-          <option value="EDUC"  >Education</option>
-          <option value="ENG"  >English</option>
-          <option value="ES"  >Environmental Studies</option>
-          <option value="EXTD"  >Extradepartmental</option>
-          <option value="FREN"  >French</option>
-          <option value="GEOS"  >Geosciences</option>
-          <option value="GER"  >German</option>
-          <option value="HIST"  >History</option>
-          <option value="ITST"  >Italian Studies</option>
-          <option value="JWST"  >Jewish Studies</option>
-          <option value="MATH"  >Mathematics</option>
-          <option value="MAS"  >Media Arts & Sciences</option>
-          <option value="ME/R"  >Medieval Renaissance Studies</option>
-          <option value="MES"  >Middle Eastern Studies</option>
-          <option value="MUS"  >Music</option>
-          <option value="NEUR"  >Neuroscience</option>
-          <option value="PEAC"  >Peace and Justice Studies</option>
-          <option value="PHIL"  >Philosophy</option>
-          <option value="PHYS"  >Physics</option>
-          <option value="POLS"  >Political Science</option>
-          <option value="PSYC"  >Psychology</option>
-          <option value="QR"  >Quantitative Reasoning</option>
-          <option value="REL"  >Religion</option>
-          <option value="RUSS"  >Russian</option>
-          <option value="SOC"  >Sociology</option>
-          <option value="SAS"  >South Asia Studies</option>
-          <option value="SPAN"  >Spanish</option>
-          <option value="SUST"  >Sustainability</option>
-          <option value="THST"  >Theatre Studies</option>
-          <option value="WGST"  >Women's and Gender Studies</option>
-          <option value="WRIT"  >Writing</option>
-      </select>
-    </div>
-    <input type="submit"/>
-  </form>
-  </div>
-);
-}
+        <h1>User Profile Here</h1>
+        <div>
+          {Object.keys(this.state.courses).map((key)=> {
+            <li key={key}>{this.state.courses[key]}</li>;
+          })}
+        </div>
+        <h3>User Courses Display Here</h3>
+        <div>
+          {Object.keys(this.state.courses).map((key) => {
+            return this.courseField(key);
+          })}
+          <button onClick={() => {
+            const newCourses = Object.assign({},this.state.courses);
+            newCourses[uuid()] = {
+              dept: 'Department',
+              number: ''
+            };
+            this.setState({
+              courses: newCourses
+            });
+          }}>Add Course</button>
+        </div>
+        </div>
+      // <div>
+      //   <div className="background">
+      //     <div className="container">
+      //       <div className="login" style={{textAlign: 'center'}}>
+      //         <h1>This is actually user profile page</h1>
+      //         <div className="username">
+      //           <MuiThemeProvider>
+      //             <TextField
+      //               type="text"
+      //               onChange={(e) => this.handleUsernameChange(e)}
+      //               value={this.state.username}
+      //               floatingLabelText="username"
+      //               floatingLabelStyle={styles.floatingLabelStyle}
+      //               floatingLabelFocusStyle={styles.floatingLabelFocusStyle}
+      //               // underlineStyle={styles.underlineStyle}
+      //               underlineFocusStyle={styles.underlineFocusStyle}
+      //           />
+      //           </MuiThemeProvider>
+      //         </div>
+      //         <div className="password">
+      //           <MuiThemeProvider>
+      //             <TextField
+      //               type="password"
+      //               floatingLabelText="password"
+      //               onChange={(e) => this.handlePasswordChange(e)}
+      //               value={this.state.password}
+      //               floatingLabelStyle={styles.floatingLabelStyle}
+      //               floatingLabelFocusStyle={styles.floatingLabelFocusStyle}
+      //               // underlineStyle={styles.underlineStyle}
+      //               underlineFocusStyle={styles.underlineFocusStyle}
+      //             />
+      //           </MuiThemeProvider>
+      //         </div>
+      //         <div className="loginbutton">
+      //           <MuiThemeProvider>
+      //             <FlatButton
+      //               style={styles.buttons}
+      //               label="LOGIN"
+      //               hoverColor={'#E8EAF6'}
+      //               onClick={() => this.handleSubmit()}
+      //             />
+      //           </MuiThemeProvider>
+      //         </div>
+      //         <div className="registerbutton">
+      //           <Link to="/register">
+                // <MuiThemeProvider>
+                //   <FlatButton
+                //     style={styles.buttons}
+                //     label="REGISTER"
+                //     hoverColor={'#E8EAF6'}
+                //     onClick={() => this.handleSubmit()}
+                //   />
+                // </MuiThemeProvider>
+      //         </Link>
+      //         {this.state.success ? <Redirect to="/" /> : null}
+      //         </div>
+      //       </div>
+      //     </div>
+      //   </div>
+      // </div>
+    )
+  }
 }
 
 export default Profile;

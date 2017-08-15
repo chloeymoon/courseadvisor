@@ -1,0 +1,174 @@
+{"ECON": {
+  "required_sets" : [
+    {
+      "type": "explicit",
+      "course": "ECON 101"
+    },
+    {
+      "type": "explicit",
+      "course": "ECON 102"
+    },
+    {
+      "type": "set",
+      "rules": {
+        "OR": ["ECON 103", "MATH 220", "STAT 218", "PSYCH 205", "SOC 190"]
+      }
+    },
+    {
+      "type": "explicit",
+      "course": "ECON 201"
+    },
+    {
+      "type": "explicit",
+      "course": "ECON 202"
+    },
+    {
+      "type": "explicit",
+      "course": "ECON 203"
+    },
+    {
+      "type": "set",
+      "rules": {
+        "ALL": ["ECON 200", "ECON 300"],
+        "NOT": ["ECON 201", "ECON 202", "ECON 203"]
+      }
+    },
+    {
+      "type": "set",
+      "rules": {
+        "ALL": ["ECON 300"],
+        "NOT": ["ECON 350", "ECON 360", "ECON 370", "ECON 380"]
+      }
+    },
+    {
+      "type": "set",
+      "rules": {
+        "ALL": ["ECON 300"],
+        "NOT": ["ECON 350", "ECON 360", "ECON 370", "ECON 380"]
+      }
+    }
+  ]
+},
+"MATH":{
+  "required_sets": [
+    {
+      "type": "explicit",
+      "course": "MATH 205"
+    },
+    {
+      "type": "explicit",
+      "course": "MATH 206"
+    },
+    {
+      "type": "explicit",
+      "course": "MATH 302"
+    },
+    {
+      "type": "explicit",
+      "course": "MATH 305"
+    },
+    {
+      "type": "set",
+      "rules": {
+        "ALL": ["MATH 200","MATH 300"],
+        "NOT": ["MATH 216", "PHYCS 216"],
+        "OR": ["PHYCS 215"]
+      }
+    },
+    {
+      "type": "set",
+      "rules": {
+        "ALL": ["MATH 200","MATH 300"],
+        "NOT": ["MATH 216", "PHYCS 216"],
+        "OR": ["PHYCS 215"]
+      }
+    },
+    {
+      "type": "set",
+      "rules": {
+        "ALL" : ["MATH 300"],
+        "NOT" : ["MATH 350", "MATH 360", "MATH 370"]
+      }
+    },
+    {
+      "type": "set",
+      "rules": {
+        "ALL" : ["MATH 300"],
+        "NOT" : ["MATH 350", "MATH 360", "MATH 370"]
+      }
+    }
+  ],
+  "special_cases" : [
+    {
+      "IF_TAKEN" : ["MATH 210"],
+      "DOESNT_COUNT" : ["MATH 215"]
+    },
+    {
+      "IF_TAKEN" : ["MATH 215"],
+      "DOESNT_COUNT" : ["MATH 210"]
+    }
+  ]
+},
+"CS":{
+  "required_sets": [
+    {
+      "type": "set",
+      "rules": {
+        "ALL": ["CS 200", "CS 300"],
+        "OR": ["CS 111"]
+      }
+    },
+    {
+      "type": "explicit",
+      "course": "CS 230"
+    },
+    {
+      "type": "explicit",
+      "course": "CS 231"
+    },
+    {
+      "type": "explicit",
+      "course": "CS 235"
+    },
+    {
+      "type": "explicit",
+      "course": "CS 240"
+    },
+    {
+      "type": "explicit",
+      "course": "CS 251"
+    },
+    {
+      "type": "set",
+      "rules": {
+        "ALL": ["CS 200", "CS 300"],
+        "NOT": ["CS 250", "CS 250H", "CS 350", "CS 350H", "CS 360", "CS 370"]
+      }
+    },
+    {
+      "type": "set",
+      "rules": {
+        "ALL" : ["CS 300"],
+        "NOT": ["CS 350", "CS 350H", "CS 360", "CS 370"]
+      }
+    },
+    {
+      "type": "set",
+      "rules": {
+        "ALL" : ["CS 300"],
+        "NOT": ["CS 350", "CS 350H", "CS 360", "CS 370"]
+      }
+    },
+    {
+      "type": "explicit",
+      "course": "MATH 225"
+    },
+    {
+      "type": "set",
+      "rules": {
+        "ALL": ["MATH 200","MATH 300"]
+      }
+    }
+  ]
+}
+}

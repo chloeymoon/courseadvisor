@@ -1,10 +1,14 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import App from './App';
-import registerServiceWorker from './registerServiceWorker';
-import Profile from './components/Profile'
-import Semester from './components/Semester'
+import App from './components/App';
+// import registerServiceWorker from './registerServiceWorker';
+import Semester from './components/Semester';
+import Profile from './components/Profile';
+import Register from './components/Register';
+import Major from './components/Major';
 
-ReactDOM.render(<Semester />, document.getElementById('root'));
-registerServiceWorker();
+
+ReactDOM.render(<App />, document.getElementById('root'));
+// registerServiceWorker();
+//<App /> eventually
