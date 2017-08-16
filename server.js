@@ -107,10 +107,20 @@ app.post('/api/getcourse', function(req,res){
   })
 })
 
+app.post('/api/getuser', function(req,res){
+  User.findOne({_id: req.user._id}, function(err, userobj){
+    res.send(userobj)
+    console.log('server.js api/getuser userobj', userobj)
+  })
+})
+
+
 //check if right
 app.post('/api/testingmajor', function(req,res){
   User.findOne({_id: req.user._id}, function(err, userobj){
-    userobj.testingmajor = 'this'
+    console.log('userobj from server', userobj)
+    console.log('req.body from server', req.body)
+    userobj.testingmajor = req.body.testingmajor
     userobj.save()
     res.send(userobj)
   })

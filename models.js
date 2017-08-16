@@ -18,7 +18,7 @@ const userSchema = new Schema({
   //   // type: Schema.Types.ObjectId,
   //   // ref: 'MyCourse'
   }],
-  testingMajor: String, // input
+  testingmajor: String, // input
 })
 const WellesleyCourse = mongoose.model('WellesleyCourse', courseSchema)
 const MyCourse = mongoose.model('MyCourse', courseSchema)

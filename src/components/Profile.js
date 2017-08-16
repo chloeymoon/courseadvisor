@@ -246,17 +246,9 @@ class Profile extends React.Component {
   render(){
     return (
       <div className="background">
+        {/* <Link to="/logout">Log Out</Link> */}
+        <Link to="/major">Major</Link>
         <h1>User Courses Here</h1>
-        {/* <div>
-        <ul>
-          {Object.keys(this.state.courses).map((key)=>
-            <li key={key}>{this.state.courses[key].dept} {this.state.courses[key].number}
-            <button onClick={() => {
-              this.handleDelete(key);
-            }}>Delete Course</button></li>
-          )}
-        </ul>
-        </div> */}
         <div>
           {Object.keys(this.state.courses).map((key) => {
             return this.courseField(key);
@@ -274,7 +266,6 @@ class Profile extends React.Component {
           }}>Add Course</button>
         </div>
         <br />
-      <Link to="/major">Major</Link>
         </div>
     );
   }
