@@ -6,7 +6,7 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import AppBar from 'material-ui/AppBar';
 import FlatButton from 'material-ui/FlatButton';
 import TextField from 'material-ui/TextField';
-require('../css/login-reg.css');
+require('../css/profile.css');
 
 const styles = {
   errorStyle: {

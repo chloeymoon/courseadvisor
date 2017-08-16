@@ -13,7 +13,7 @@ import uuid from 'uuid/v4';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 injectTapEventPlugin();
 
-require('../css/login-reg.css');
+require('../css/profile.css');
 
 const styles = {
   errorStyle: {
@@ -38,8 +38,15 @@ const styles = {
     backgroundColor: 'white'
   },
   customWidth: {
-    width: 200,
+    width: 300,
   },
+  container: {
+    display: 'flex',
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'row',
+  }
 };
 
 
@@ -52,8 +59,6 @@ class Profile extends React.Component {
     this.handleDeptChange = this.handleDeptChange.bind(this);
   }
   componentDidMount(){
-    // axios call
-    // .then( this.setState({courses: something here ) )
     fetch('/api/getcourse', {
       method: 'POST',
       credentials: 'include',
@@ -93,7 +98,7 @@ class Profile extends React.Component {
     console.log('new num added', coursesCopy);
   }
 
-  handleSubmit(key){
+  handleSave(key){
     console.log('this.state.courses updated:', this.state.courses);
     fetch('/api/updatecourse', {
       method: 'POST',
@@ -145,13 +150,16 @@ class Profile extends React.Component {
   //each input row (dept, number, save)
   courseField(key){
     return (
-        <div key={key}>
+        <div key={key} style={styles.container}>
           <MuiThemeProvider>
-          <DropDownMenu value={this.state.courses[key].dept}
+          <DropDownMenu
+            // className="departmentInput"
+            value={this.state.courses[key].dept}
             onChange={this.handleDeptChange.bind(this, key)}
             openImmediately={false}
             autoWidth={false}
-            maxHeight={300}>
+            maxHeight={300}
+            style={styles.customWidth}>
             {/* JSON import? */}
             <MenuItem value="Department" primaryText="Department" />
             <MenuItem value="AFR" primaryText="Africana Studies" />
@@ -204,7 +212,9 @@ class Profile extends React.Component {
           </MuiThemeProvider>
         <MuiThemeProvider>
           <TextField
+            // className="departmentInput"
             id="numinput"
+            style={styles.customWidth}
             type="text"
             onChange={(e) => this.handleCourseNumChange(key,e)}
             value={this.state.courses[key].number}
@@ -217,7 +227,7 @@ class Profile extends React.Component {
             style={styles.buttons}
             label="Save"
             hoverColor={'#E8EAF6'}
-            onClick={() => this.handleSubmit(key)}
+            onClick={() => this.handleSave(key)}
           />
         </MuiThemeProvider>
         <MuiThemeProvider>
@@ -235,7 +245,7 @@ class Profile extends React.Component {
 
   render(){
     return (
-      <div>
+      <div className="background">
         <h1>User Courses Here</h1>
         {/* <div>
         <ul>
@@ -251,6 +261,7 @@ class Profile extends React.Component {
           {Object.keys(this.state.courses).map((key) => {
             return this.courseField(key);
           })}
+          <br />
           <button onClick={() => {
             const newCourses = Object.assign({},this.state.courses);
             newCourses[uuid()] = {
@@ -262,6 +273,8 @@ class Profile extends React.Component {
             });
           }}>Add Course</button>
         </div>
+        <br />
+      <Link to="/major">Major</Link>
         </div>
     );
   }

@@ -1,6 +1,6 @@
 import Profile from './Profile';
 import Register from './Register';
-import Major from './Major';
+import { Major} from './Major';
 import { BrowserRouter, Route } from 'react-router-dom';
 
 var React = require('react');

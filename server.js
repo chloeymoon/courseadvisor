@@ -107,13 +107,14 @@ app.post('/api/getcourse', function(req,res){
   })
 })
 
-// app.get('/api/updatecourse', function(req,res){
-//   User.find({_id: req.user._id}).populate('_id')
-//   .exec(function(err,user){
-//     console.log('server.js 104 user', user)
-//     res.json(user)
-//   })
-// })
+//check if right
+app.post('/api/testingmajor', function(req,res){
+  User.findOne({_id: req.user._id}, function(err, userobj){
+    userobj.testingmajor = 'this'
+    userobj.save()
+    res.send(userobj)
+  })
+})
 
 app.post('/login', passport.authenticate('local', {failureRedirect: '/login'}),
 function(req, res){
