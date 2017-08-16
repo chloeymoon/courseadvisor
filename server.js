@@ -82,13 +82,9 @@ app.post('/register', function(req, res) {
   })
 
 app.post('/api/updatecourse', function(req, res){
-  console.log("api start")
   User.findOne({_id: req.user._id}, function(err, userobj){
-  console.log("api about to push")
     userobj.courses.push(req.body.courses);
-    console.log("api about to save")
     userobj.save();
-    console.log('updated courses (userobj.courses) array after saving:', userobj.courses)
     res.send(userobj)
   })
 })
@@ -105,9 +101,9 @@ app.post('/api/deletecourse', function(req, res){
 });
 
 app.post('/api/getcourse', function(req,res){
-  console.log('server 108')
   User.findOne({_id: req.user._id}, function(err, userobj){
     res.send(userobj.courses)
+    console.log('userobj.courses here(server line 106)', userobj.courses)
   })
 })
 
@@ -155,7 +151,4 @@ app.listen(3000, function () {
   console.log('Backend server running on port 3000!')
 })
 
-// app.listen(3000, function () {
-//   console.log('Backend server for Electron App running on port 3000!')
-// })
 module.exports = app

@@ -71,6 +71,7 @@ class Profile extends React.Component {
       this.setState({courses: obj});
     });
   }
+
   //dropdown menu
   handleDeptChange(key, event, index, value) {
     const newDept = value;
@@ -82,6 +83,7 @@ class Profile extends React.Component {
     this.setState({courses: coursesCopy});
     console.log('new dept added', coursesCopy);
   }
+
   //input field
   handleCourseNumChange(key, e) {
     const newNum = e.target.value;
@@ -92,8 +94,6 @@ class Profile extends React.Component {
   }
 
   handleSubmit(key){
-    const courseRow = this.state.courses[key];
-    console.log('courseRow added:', courseRow);
     console.log('this.state.courses updated:', this.state.courses);
     fetch('/api/updatecourse', {
       method: 'POST',
@@ -109,6 +109,8 @@ class Profile extends React.Component {
       return (response.json());
     }).then((obj)=>{
       console.log('profile.js user obj here', obj);
+      this.setState({courses: obj.courses});
+      alert('Course Saved!');
       return obj;
     }).catch((err)=>{
       console.log('err fetching api/updatecourse', err);
@@ -131,7 +133,9 @@ class Profile extends React.Component {
     }).then((response) => {
       return (response.json());
     }).then((obj)=>{
-      console.log('profile.js user obj here', obj);
+      console.log('course deleted, user obj here profile.js line136', obj);
+      this.setState({courses: obj.courses});
+      alert('Course Deleted!');
       return obj;
     }).catch((err)=>{
       console.log('err fetching api/updatecourse', err);
@@ -146,8 +150,9 @@ class Profile extends React.Component {
           <DropDownMenu value={this.state.courses[key].dept}
             onChange={this.handleDeptChange.bind(this, key)}
             openImmediately={false}
-            autoWidth={true}
+            autoWidth={false}
             maxHeight={300}>
+            {/* JSON import? */}
             <MenuItem value="Department" primaryText="Department" />
             <MenuItem value="AFR" primaryText="Africana Studies" />
             <MenuItem value="AMST" primaryText="American Studies" />
@@ -231,13 +236,17 @@ class Profile extends React.Component {
   render(){
     return (
       <div>
-        <h1>User Profile Here</h1>
-        <div>
-          {Object.keys(this.state.courses).map((key)=> {
-            <li key={key}>{this.state.courses[key]}</li>;
-          })}
-        </div>
-        <h3>User Courses Display Here</h3>
+        <h1>User Courses Here</h1>
+        {/* <div>
+        <ul>
+          {Object.keys(this.state.courses).map((key)=>
+            <li key={key}>{this.state.courses[key].dept} {this.state.courses[key].number}
+            <button onClick={() => {
+              this.handleDelete(key);
+            }}>Delete Course</button></li>
+          )}
+        </ul>
+        </div> */}
         <div>
           {Object.keys(this.state.courses).map((key) => {
             return this.courseField(key);
@@ -254,67 +263,7 @@ class Profile extends React.Component {
           }}>Add Course</button>
         </div>
         </div>
-      // <div>
-      //   <div className="background">
-      //     <div className="container">
-      //       <div className="login" style={{textAlign: 'center'}}>
-      //         <h1>This is actually user profile page</h1>
-      //         <div className="username">
-      //           <MuiThemeProvider>
-      //             <TextField
-      //               type="text"
-      //               onChange={(e) => this.handleUsernameChange(e)}
-      //               value={this.state.username}
-      //               floatingLabelText="username"
-      //               floatingLabelStyle={styles.floatingLabelStyle}
-      //               floatingLabelFocusStyle={styles.floatingLabelFocusStyle}
-      //               // underlineStyle={styles.underlineStyle}
-      //               underlineFocusStyle={styles.underlineFocusStyle}
-      //           />
-      //           </MuiThemeProvider>
-      //         </div>
-      //         <div className="password">
-      //           <MuiThemeProvider>
-      //             <TextField
-      //               type="password"
-      //               floatingLabelText="password"
-      //               onChange={(e) => this.handlePasswordChange(e)}
-      //               value={this.state.password}
-      //               floatingLabelStyle={styles.floatingLabelStyle}
-      //               floatingLabelFocusStyle={styles.floatingLabelFocusStyle}
-      //               // underlineStyle={styles.underlineStyle}
-      //               underlineFocusStyle={styles.underlineFocusStyle}
-      //             />
-      //           </MuiThemeProvider>
-      //         </div>
-      //         <div className="loginbutton">
-      //           <MuiThemeProvider>
-      //             <FlatButton
-      //               style={styles.buttons}
-      //               label="LOGIN"
-      //               hoverColor={'#E8EAF6'}
-      //               onClick={() => this.handleSubmit()}
-      //             />
-      //           </MuiThemeProvider>
-      //         </div>
-      //         <div className="registerbutton">
-      //           <Link to="/register">
-                // <MuiThemeProvider>
-                //   <FlatButton
-                //     style={styles.buttons}
-                //     label="REGISTER"
-                //     hoverColor={'#E8EAF6'}
-                //     onClick={() => this.handleSubmit()}
-                //   />
-                // </MuiThemeProvider>
-      //         </Link>
-      //         {this.state.success ? <Redirect to="/" /> : null}
-      //         </div>
-      //       </div>
-      //     </div>
-      //   </div>
-      // </div>
-    )
+    );
   }
 }
 
