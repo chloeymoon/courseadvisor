@@ -17,7 +17,7 @@ class App extends React.Component {
         {/* <Route path='/documentPortal' component={DocumentPortal} />
         <Route path='/editor/:docId' component={MyEditor} /> */}
         <Route path="/major" component={Major} />
-        <Route path="/users" component={Profile} />
+        <Route path="/profile" component={Profile} />
         <Route exact path="/" component={Profile} />
         {/* <Route path="/users" component={Profile} /> */}
       </div>

@@ -39,6 +39,7 @@ class Major extends React.Component {
     }).then((obj)=>{
       this.setState({testingmajor: value});
       console.log('testing major saved, obj', obj);
+      return obj;
     }).catch((err)=>{
       console.log('err saving testingmajor', err);
     });
@@ -69,29 +70,23 @@ class Major extends React.Component {
   render(){
     return (
       <div className="background">
-      <div>
-        {/* <Link to="/logout">Log Out</Link> */}
-        <Link to="/users">Profile</Link>
-        <h1>Major here</h1>
-        <h3>Pick a major</h3>
-        <MuiThemeProvider>
-        <DropDownMenu
-          value={this.state.testingmajor}
-          onChange={this.majorSave.bind(this)}
-          openImmediately={false}
-          autoWidth={false}
-          maxHeight={300}>
-          <MenuItem value='Department' primaryText="Department" />
-          <MenuItem value="ECON" primaryText="Economics" />
-          <MenuItem value="CS" primaryText="Computer Science" />
-          <MenuItem value="MATH" primaryText="Mathematics" />
-        </DropDownMenu>
-      </MuiThemeProvider>
-      </div>
-      <div>
-          <UserCourses />
-      </div>
-      <h3>Courses to take to complete {this.state.testingmajor} major:</h3>
+        <div>
+          {/* <Link to="/logout">Log Out</Link> */}
+          <h1>Pick a major</h1>
+          <MuiThemeProvider>
+          <DropDownMenu
+            value={this.state.testingmajor}
+            onChange={this.majorSave.bind(this)}
+            openImmediately={false}
+            autoWidth={false}
+            maxHeight={300}>
+            <MenuItem value='Department' primaryText="Department" />
+            <MenuItem value="ECON" primaryText="Economics" />
+            <MenuItem value="CS" primaryText="Computer Science" />
+            <MenuItem value="MATH" primaryText="Mathematics" />
+          </DropDownMenu>
+        </MuiThemeProvider>
+        </div>
       </div>
     );
   }

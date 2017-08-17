@@ -8,6 +8,8 @@ import FlatButton from 'material-ui/FlatButton';
 import TextField from 'material-ui/TextField';
 import DropDownMenu from 'material-ui/DropDownMenu';
 import MenuItem from 'material-ui/MenuItem';
+import {Major} from './Major';
+import axios from 'axios'
 
 import uuid from 'uuid/v4';
 import injectTapEventPlugin from 'react-tap-event-plugin';
@@ -49,15 +51,16 @@ const styles = {
   }
 };
 
-
 class Profile extends React.Component {
   constructor(props){
     super(props);
     this.state = {
-      courses: {}
+      courses: {},
+      majorStatuses: null // eventually: {completed: [sets], incompleted: [sets]}
     };
     this.handleDeptChange = this.handleDeptChange.bind(this);
   }
+
   componentDidMount(){
     fetch('/api/getcourse', {
       method: 'POST',
@@ -73,11 +76,10 @@ class Profile extends React.Component {
       return (response.json());
     }).then((obj)=>{
       console.log('api/getcourse resp courses obj here', obj);
-      this.setState({courses: obj});
+      this.setState({courses: obj, majorStatuses: null})
+      // console.log('this.state.majorStatuses', this.state.majorStatuses);
     });
   }
-
-  //dropdown menu
   handleDeptChange(key, event, index, value) {
     const newDept = value;
     const coursesCopy = Object.assign({}, this.state.courses);
@@ -88,8 +90,6 @@ class Profile extends React.Component {
     this.setState({courses: coursesCopy});
     console.log('new dept added', coursesCopy);
   }
-
-  //input field
   handleCourseNumChange(key, e) {
     const newNum = e.target.value;
     const coursesCopy = Object.assign({}, this.state.courses);
@@ -97,7 +97,6 @@ class Profile extends React.Component {
     this.setState({courses: coursesCopy});
     console.log('new num added', coursesCopy);
   }
-
   handleSave(key){
     console.log('this.state.courses updated:', this.state.courses);
     fetch('/api/updatecourse', {
@@ -121,7 +120,6 @@ class Profile extends React.Component {
       console.log('err fetching api/updatecourse', err);
     });
   }
-
   handleDelete(key){
     const courseRow = this.state.courses[key];
     console.log('courseRow added:', courseRow);
@@ -147,7 +145,78 @@ class Profile extends React.Component {
     });
   }
 
-  //each input row (dept, number, save)
+  computeAlgorithm(){
+    axios.get('/api/compute_algorithm')
+    .then(response => {
+      console.log('computeAlgorithm() response here', response);
+      // this.setState({majorStatuses});
+      const respdata = response.data;
+      //respdata = {majorStatuses: Array(0), completedPercentage: 100, incompleteSetCount: 9, totalSetCount: 9}
+      const majorStatusObj = respdata.majorStatuses;
+      console.log('computeAlgorithm response', majorStatusObj);
+      this.setState({majorStatuses: majorStatusObj}
+);
+    })
+    .catch(err => {
+      console.log(err);
+    });
+  }
+
+  render(){
+    return (
+      <div className="background">
+        {/* <Link to="/logout">Log Out</Link> */}
+        <h1>Fill out your courses</h1>
+        <div>
+          {Object.keys(this.state.courses).map((key) => {
+            return this.courseField(key);
+          })}
+          <br />
+          <button onClick={() => {
+            const newCourses = Object.assign({},this.state.courses);
+            newCourses[uuid()] = {
+              dept: 'Department',
+              number: ''
+            };
+            this.setState({
+              courses: newCourses
+            });
+          }}>Add Course</button>
+        </div>
+        <br />
+        <Major/>
+        <MuiThemeProvider>
+          <FlatButton
+          id="compute"
+          style={styles.buttons}
+          label="See status"
+          hoverColor={'#E8EAF6'}
+          onClick={() => this.computeAlgorithm()}
+        />
+      </MuiThemeProvider>
+        {
+          this.state.majorStatuses
+          ?
+          <div>
+            {/* {
+              this.state.majorStatuses.completed.map(req => {
+
+              })
+            }
+            {
+              this.state.majorStatuses.incompleted.map(req => {
+
+              })
+            } */}
+          </div>
+
+          :
+          <h1>not finished computing</h1>
+        }
+        </div>
+    );
+  }
+
   courseField(key){
     return (
         <div key={key} style={styles.container}>
@@ -239,33 +308,6 @@ class Profile extends React.Component {
             onClick={() => this.handleDelete(key)}
           />
         </MuiThemeProvider>
-        </div>
-    );
-  }
-
-  render(){
-    return (
-      <div className="background">
-        {/* <Link to="/logout">Log Out</Link> */}
-        <Link to="/major">Major</Link>
-        <h1>User Courses Here</h1>
-        <div>
-          {Object.keys(this.state.courses).map((key) => {
-            return this.courseField(key);
-          })}
-          <br />
-          <button onClick={() => {
-            const newCourses = Object.assign({},this.state.courses);
-            newCourses[uuid()] = {
-              dept: 'Department',
-              number: ''
-            };
-            this.setState({
-              courses: newCourses
-            });
-          }}>Add Course</button>
-        </div>
-        <br />
         </div>
     );
   }

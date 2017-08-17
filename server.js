@@ -17,13 +17,7 @@ app.use(bodyParser.urlencoded({extended: false}))
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-const alg = require('./algorithm')
 
-// const a = require('./data/requirementsData/majorReq.json')
-// not importing a or majorReq????
-// const a = require('./data/requirementsData/majorReq.json')
-// const majorReq = Object.assign({}, a)
-//mongoose model
 const models = require('./models')
 // const WellesleyCourse = models.WellesleyCourse
 // const MyCourse = models.MyCourse
@@ -43,22 +37,17 @@ app.set('view engine', 'html');
 console.log('hello from server')
 // passport strategy
 passport.use(new LocalStrategy(function(username, password, done) {
-  // Find the user with the given username
   models.User.findOne({ username: username }, function (err, user) {
-    // if there's an error, finish trying to authenticate (auth failed)
     if (err) {
       console.error('!!!! Error fetching user in LocalStrategy', err);
       return done(err);
     }
-    // if no user present, auth failed
     if (!user) {
       return done(null, false, { message: '!!! Incorrect username.' });
     }
-    // if passwords do not match, auth failed
     if (user.password !== password) {
       return done(null, false, { message: '!!! Incorrect password.' });
     }
-    // auth has has succeeded
     return done(null, user);
   });
 }
@@ -73,6 +62,7 @@ passport.deserializeUser(function(id, done) {
 });
 app.use(passport.initialize());
 app.use(passport.session());
+
 app.post('/register', function(req, res) {
   console.log('hello from server.js 74')
   const user = new User({
@@ -99,7 +89,7 @@ app.post('/api/deletecourse', function(req, res){
   User.findOne({_id: req.user._id}, function(err, userobj){
     let filteredArr = userobj.courses.filter((courseobj)=>
       (courseobj.dept !== req.body.courses.dept)
-      || (courseobj.num !== req.body.courses.num));
+      || (courseobj.number !== req.body.courses.number));
     userobj.courses = filteredArr
     userobj.save();
     res.send(userobj)
@@ -130,10 +120,28 @@ app.post('/api/testingmajor', function(req,res){
   })
 })
 
-app.post('/api/returncourses', function(req,res){
-  alg.sort(req.user._id)
-  alg.byMajor()
-  returncourses(req.user._id)
+app.get('/api/compute_algorithm', (req,res) => {
+  const alg = require('./algorithm')
+  User.findOne({_id: req.user._id})
+  .then(user => {
+    const major = user.testingmajor
+    const courses = user.courses.sort(function(a, b){
+      return a.num - b.num;
+    })
+    // console.log('SERVER API/COMPUTE_ALGO MAJOR', major)
+    const retObj = alg.newreturncourses(user, courses)
+    // console.log('RETOBJ here', retObj) // this works
+    console.log('RETOBJ>MAJORST', retObj.majorStatuses[0])
+    res.json({
+      majorStatuses: retObj.majorStatuses,
+      completedPercentage: retObj.completedPercentage,
+      incompleteSetCount: retObj.incompleteSetCount,
+      totalSetCount: retObj.totalSetCount
+    })
+  })
+  .catch(err => {
+    console.log('server.js /api/compute_algorithm error',err)
+  })
 })
 
 app.post('/login', passport.authenticate('local', {failureRedirect: '/login'}),
@@ -166,7 +174,6 @@ app.get('*', (request, response) => {
     response.sendFile(path.join(__dirname, 'public/app.html'));
 });
 
-//M3 - change app to server
 app.listen(3000, function () {
   console.log('Backend server running on port 3000!')
 })
