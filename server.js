@@ -17,6 +17,12 @@ app.use(bodyParser.urlencoded({extended: false}))
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+const alg = require('./algorithm')
+
+// const a = require('./data/requirementsData/majorReq.json')
+// not importing a or majorReq????
+// const a = require('./data/requirementsData/majorReq.json')
+// const majorReq = Object.assign({}, a)
 //mongoose model
 const models = require('./models')
 // const WellesleyCourse = models.WellesleyCourse
@@ -114,8 +120,6 @@ app.post('/api/getuser', function(req,res){
   })
 })
 
-
-//check if right
 app.post('/api/testingmajor', function(req,res){
   User.findOne({_id: req.user._id}, function(err, userobj){
     console.log('userobj from server', userobj)
@@ -126,12 +130,17 @@ app.post('/api/testingmajor', function(req,res){
   })
 })
 
+app.post('/api/returncourses', function(req,res){
+  alg.sort(req.user._id)
+  alg.byMajor()
+  returncourses(req.user._id)
+})
+
 app.post('/login', passport.authenticate('local', {failureRedirect: '/login'}),
 function(req, res){
   res.redirect('/users/' + req.user.username)
 });
 passport.authenticate('local', { failureFlash: 'Invalid username or password.' });
-
 app.get('/login', (req,res) => {
   res.sendFile(path.join(__dirname, 'public/login.html'))
 })

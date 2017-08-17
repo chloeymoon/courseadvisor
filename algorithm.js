@@ -50,10 +50,11 @@ const createMydata = function(){
 // })
 
 var sort = async function(userid){
-  var sorted = await User.findById(userid, function(err){
+  var sorted = await User.findbyId(userid, function(err){
     console.log('User.findById err', err)
   }) //// check
   .then((user)=> {
+    console.log('sort user here', user)
     let userCrs = user.courses
     let sorted = userCrs.sort(function(a, b){
       return a.num - b.num;
@@ -63,8 +64,9 @@ var sort = async function(userid){
   console.log('sorted my course array here', sorted)
   return sorted;
 };
+
 // getting major req document (a) & majorReq is a copy actually
-const a = require('./requirementsData/majorReq.json')
+const a = require('./data/requirementsData/majorReq.json')
 const majorReq = Object.assign({}, a)
 // byMajor(): returns majorReq w/ "completed" fields!
 const byMajor = function(){
@@ -82,7 +84,7 @@ byMajor()
 
 
 //helper function
-var satisfies = function(set,course){
+const satisfies = function(set,course){
   const courseSt = course.dept + ' ' + course.num
   switch(set.type){
     case "explicit":
@@ -127,38 +129,42 @@ var satisfies = function(set,course){
 }
 
 // find user's course array and check if each course satisfies
-User.findOne({lastName: "Moon", firstName: "Chloe", testingMajor: "ECON"})
-.then(async (user) => { // user model obj
-  const userCourse = await sort(user._id) // sorted course array
-  for(let i=0; i<userCourse.length; i++){
-    if(majorReq[user.testingMajor]){
-      const sets = majorReq[user.testingMajor].required_sets;
-      for(let j=0; j<sets.length; j++){
-        if(!sets[j].completed && satisfies(sets[j],userCourse[i])){
-          sets[j].completed = true
-          break;
-        } else {
-          // console.log('162: satisfies func is false for sets', sets[j], 'userCourse', userCourse[i])
+const returncourses = function(userId){
+  User.findOne({_id: userId})
+  .then(async (user) => { // user model obj
+    const userCourse = await sort(user._id) // sorted course array
+    for(let i=0; i<userCourse.length; i++){
+      if(majorReq[user.testingMajor]){
+        const sets = majorReq[user.testingMajor].required_sets;
+        for(let j=0; j<sets.length; j++){
+          if(!sets[j].completed && satisfies(sets[j],userCourse[i])){
+            sets[j].completed = true
+            break;
+          } else {
+            // console.log('162: satisfies func is false for sets', sets[j], 'userCourse', userCourse[i])
+          }
         }
       }
     }
-  }
-  // console.log('updated majorReq obj', majorReq.ECON.required_sets)
-  return majorReq[user.testingMajor].required_sets
-})
-.then((resp) => {
-  console.log('resp here', resp)
-  const incompleteArr = []
-  resp.forEach((set) => {
-    if(set.completed === false){
-      incompleteArr.push(set)
-    }
+    // console.log('updated majorReq obj', majorReq.ECON.required_sets)
+    return majorReq[user.testingMajor].required_sets
   })
-  // console.log('170 incompleteArr', incompleteArr)
-  const incompSetNum = Number(incompleteArr.length);
-  const totalSetNum = Number(resp.length);
-  const completedPer = (incompSetNum)/(totalSetNum)*100
-  const major = resp[0].course.split(' ')[0]
-  console.log(incompleteArr)
-  console.log('YOU ARE', completedPer, '% DONE WITH', major, 'MAJOR!!!! YOU NEED', incompSetNum, 'OUT OF', totalSetNum, 'MORE CLASSES TO COMPLETE THE MAJOR!!!!')
-})
+  .then((resp) => {
+    console.log('resp here', resp)
+    const incompleteArr = []
+    resp.forEach((set) => {
+      if(set.completed === false){
+        incompleteArr.push(set)
+      }
+    })
+    // console.log('170 incompleteArr', incompleteArr)
+    const incompSetNum = Number(incompleteArr.length);
+    const totalSetNum = Number(resp.length);
+    const completedPer = (incompSetNum)/(totalSetNum)*100
+    const major = resp[0].course.split(' ')[0]
+    console.log(incompleteArr)
+    console.log('YOU ARE', completedPer, '% DONE WITH', major, 'MAJOR!!!! YOU NEED', incompSetNum, 'OUT OF', totalSetNum, 'MORE CLASSES TO COMPLETE THE MAJOR!!!!')
+  })
+}
+
+module.exports = {returncourses, satisfies, byMajor, sort, majorReq};

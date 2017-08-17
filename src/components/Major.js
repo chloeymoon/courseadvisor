@@ -47,8 +47,6 @@ class Major extends React.Component {
 
 // getting from server, this is course but eventually get user and use coursesn
   componentDidMount(){
-    // axios call
-    // .then( this.setState({courses: something here ) )
     fetch('/api/getuser', {
       method: 'POST',
       credentials: 'include',
@@ -93,6 +91,7 @@ class Major extends React.Component {
       <div>
           <UserCourses />
       </div>
+      <h3>Courses to take to complete {this.state.testingmajor} major:</h3>
       </div>
     );
   }

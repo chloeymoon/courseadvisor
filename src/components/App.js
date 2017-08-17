@@ -11,7 +11,7 @@ class App extends React.Component {
   render(){
     return (
       <BrowserRouter>
-        <div>
+        <div className="background">
         {/* <Route path="/login" component={Login} />
         <Route path="/register" component={Register} /> */}
         {/* <Route path='/documentPortal' component={DocumentPortal} />
