@@ -7,40 +7,52 @@ import AppBar from 'material-ui/AppBar';
 import FlatButton from 'material-ui/FlatButton';
 import TextField from 'material-ui/TextField';
 import DropDownMenu from 'material-ui/DropDownMenu';
+import ContentAdd from 'material-ui/svg-icons/content/add';
+import EqualIcon from 'material-ui/svg-icons/navigation/expand-more';
 import MenuItem from 'material-ui/MenuItem';
+import PropTypes from 'prop-types';
+import IconButton from 'material-ui/IconButton';
+
 import {Major} from './Major';
 import axios from 'axios'
-
+import FloatingActionButton from 'material-ui/FloatingActionButton';
 import uuid from 'uuid/v4';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 injectTapEventPlugin();
 
+// const filterlisticon = require('../filterlisticon')
+
 require('../css/profile.css');
 
 const styles = {
-  errorStyle: {
-    color: '#01579B',
-  },
-  underlineStyle: {
-    borderColor: '#01579B',
-  },
-  floatingLabelStyle: {
-    color: 'white',
-  },
-  floatingLabelFocusStyle: {
-    color: '#01579B',
-  },
-  underlineFocusStyle: {
-    borderColor: '#01579B',
-  },
   buttons: {
     width: '100px',
+    margin: '2px',
+    color: 'black',
+    backgroundColor: 'white',
+    paddingTop: 3,
+  },
+  buttons2: {
+    width: '200px',
     margin: '2px',
     color: 'black',
     backgroundColor: 'white'
   },
   customWidth: {
-    width: 300,
+    width: 270,
+    fontSize: 16
+  },
+  inputbox:{
+    height: 60,
+    paddingTop: 3,
+    fontFamily: 'Raleway, sans-serif',
+    width: 80,
+    color: 'black'
+  },
+  dropdown:{
+    fontFamily: 'Raleway, sans-serif',
+    width: 280,
+    color: 'grey'
   },
   container: {
     display: 'flex',
@@ -48,6 +60,31 @@ const styles = {
     justifyContent: 'center',
     alignItems: 'center',
     flexDirection: 'row',
+  },
+  icon:{
+    marginRight: 20
+  },
+  majorStatuscontainer: {
+    display: 'flex',
+    flex:1,
+    flexDirection: 'row'
+  },
+  reqcolumn: {
+    display: 'flex',
+    flex:1,
+    flexDirection: 'column',
+    alignItems: 'center'
+  },
+  reqset: {
+    display: 'flex',
+    flex:1,
+    // margin: 'auto',
+    backgroundColor: '#F5F5F5',
+    width: 300,
+    // height: 100,
+    flexBasis: 'content',
+    alignItems: 'center ',
+    justifyContent: 'center'
   }
 };
 
@@ -56,7 +93,10 @@ class Profile extends React.Component {
     super(props);
     this.state = {
       courses: {},
-      majorStatuses: null // eventually: {completed: [sets], incompleted: [sets]}
+      majorStatuses: null,
+      completedPercentage: null,
+      totalSetCount: null
+       // eventually: {completed: [sets], incompleted: [sets]}
     };
     this.handleDeptChange = this.handleDeptChange.bind(this);
   }
@@ -76,7 +116,7 @@ class Profile extends React.Component {
       return (response.json());
     }).then((obj)=>{
       console.log('api/getcourse resp courses obj here', obj);
-      this.setState({courses: obj, majorStatuses: null})
+      this.setState({courses: obj, majorStatuses: this.state.majorStatuses});
       // console.log('this.state.majorStatuses', this.state.majorStatuses);
     });
   }
@@ -154,8 +194,11 @@ class Profile extends React.Component {
       //respdata = {majorStatuses: Array(0), completedPercentage: 100, incompleteSetCount: 9, totalSetCount: 9}
       const majorStatusObj = respdata.majorStatuses;
       console.log('computeAlgorithm response', majorStatusObj);
-      this.setState({majorStatuses: majorStatusObj}
-);
+      this.setState({majorStatuses: majorStatusObj,
+        completedPercentage: respdata.completedPercentage,
+        incompleteSetCount: respdata.incompleteSetCount,
+        totalSetCount: respdata.totalSetCount}
+      );
     })
     .catch(err => {
       console.log(err);
@@ -163,6 +206,7 @@ class Profile extends React.Component {
   }
 
   render(){
+    console.log('MAJORSTATUSES STATE', this.state.majorStatuses);
     return (
       <div className="background">
         {/* <Link to="/logout">Log Out</Link> */}
@@ -172,48 +216,98 @@ class Profile extends React.Component {
             return this.courseField(key);
           })}
           <br />
-          <button onClick={() => {
-            const newCourses = Object.assign({},this.state.courses);
-            newCourses[uuid()] = {
-              dept: 'Department',
-              number: ''
-            };
-            this.setState({
-              courses: newCourses
-            });
-          }}>Add Course</button>
+          <MuiThemeProvider>
+            <FloatingActionButton
+              mini={true}
+              backgroundColor="#BDBDBD"
+              disabled={false}
+              onClick={() => {
+                const newCourses = Object.assign({},this.state.courses);
+                newCourses[uuid()] = {
+                  dept: 'Department',
+                  number: ''
+                };
+                this.setState({
+                  courses: newCourses
+                });
+              }}
+              style={styles.icon}>
+              <ContentAdd />
+            </FloatingActionButton>
+        </MuiThemeProvider>
         </div>
         <br />
         <Major/>
+        <br />
         <MuiThemeProvider>
-          <FlatButton
-          id="compute"
-          style={styles.buttons}
-          label="See status"
-          hoverColor={'#E8EAF6'}
-          onClick={() => this.computeAlgorithm()}
-        />
-      </MuiThemeProvider>
+          <FloatingActionButton
+            id="compute"
+            mini={true}
+            backgroundColor="#BDBDBD"
+            disabled={false}
+            onClick={() => this.computeAlgorithm()}
+            style={styles.icon}
+            >
+            <EqualIcon />
+          </FloatingActionButton>
+        </MuiThemeProvider>
+      <div className="nopadding">
+        <br></br>
         {
           this.state.majorStatuses
           ?
           <div>
-            {/* {
-              this.state.majorStatuses.completed.map(req => {
-
-              })
+            <h3>You're {Math.round(this.state.completedPercentage)}% done!</h3>
+            <h3>{this.state.majorStatuses.completed.length} out of {this.state.totalSetCount} Courses Completed</h3>
+          <div style={styles.majorStatuscontainer}>
+            <div style={styles.reqcolumn}>
+            <h2>Completed</h2>
+            {this.state.majorStatuses.completed.map(set => {
+                if(set.type==="set"){
+              //     return <ul style={styles.reqset} className="nopadding">{
+              //   if(set.type.set.ALL){
+              //     <p>{set.rules.ALL} level course</p>
+              //   }
+              //   if(set.type.set.OR) {
+              //     <p>Or {set.rules.OR}</p>
+              //   }
+              //   if(set.type.set.NOT){
+              //     <p>Not {set.type.set.NOR}</p>
+              //   }
+              // }</ul>
+                return(
+                    <ul style={styles.reqset} className="nopadding"><p>{set.rules.ALL} level course, NOT {set.rules.NOT}, OR {set.rules.OR}
+                    </p></ul>
+                );
+              } else return(
+                  <ul style={styles.reqset} className="nopadding"><p>{set.course}</p></ul>
+              );
+            })
             }
-            {
-              this.state.majorStatuses.incompleted.map(req => {
-
-              })
-            } */}
           </div>
+          <div style={styles.reqcolumn}>
+            <h2>Incomplete</h2>
+            {this.state.majorStatuses.incompleted.map(set => {
+              // console.log('req for incompleted', set);
+              if(set.type==="set"){
+                return(
+                      <ul style={styles.reqset} className="nopadding"><p>{set.rules.ALL} level course, NOT {set.rules.NOT}, OR {set.rules.OR}
+                      </p></ul>
+                );
+              } return(
+                    <ul style={styles.reqset} className="nopadding"><p>{set.course}</p></ul>
+              );
 
+            })
+            }
+          </div>
+          </div>
+          </div>
           :
-          <h1>not finished computing</h1>
+          <p></p>
         }
-        </div>
+      </div>
+    </div>
     );
   }
 
@@ -223,13 +317,13 @@ class Profile extends React.Component {
           <MuiThemeProvider>
           <DropDownMenu
             // className="departmentInput"
+            labelStyle={{color:'grey'}}
             value={this.state.courses[key].dept}
             onChange={this.handleDeptChange.bind(this, key)}
             openImmediately={false}
             autoWidth={false}
             maxHeight={300}
-            style={styles.customWidth}>
-            {/* JSON import? */}
+            style={styles.dropdown}>
             <MenuItem value="Department" primaryText="Department" />
             <MenuItem value="AFR" primaryText="Africana Studies" />
             <MenuItem value="AMST" primaryText="American Studies" />
@@ -281,13 +375,13 @@ class Profile extends React.Component {
           </MuiThemeProvider>
         <MuiThemeProvider>
           <TextField
-            // className="departmentInput"
             id="numinput"
-            style={styles.customWidth}
+            inputStyle={{ textAlign: 'center', color: 'grey', height: '110%'}}
+            style={styles.inputbox}
             type="text"
             onChange={(e) => this.handleCourseNumChange(key,e)}
             value={this.state.courses[key].number}
-            placeholder="Course Number"
+            placeholder="#"
         />
         </MuiThemeProvider>
         <MuiThemeProvider>

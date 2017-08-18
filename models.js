@@ -9,8 +9,6 @@ const courseSchema = new Schema({
   num: Number
 })
 const userSchema = new Schema({
-  lastName: String,
-  firstName: String,
   username: String,
   password: String,
   courses: [{
@@ -18,7 +16,8 @@ const userSchema = new Schema({
   //   // type: Schema.Types.ObjectId,
   //   // ref: 'MyCourse'
   }],
-  testingmajor: String, // input
+  testingmajor: String,
+  majorStatuses: {}
 })
 const WellesleyCourse = mongoose.model('WellesleyCourse', courseSchema)
 const MyCourse = mongoose.model('MyCourse', courseSchema)

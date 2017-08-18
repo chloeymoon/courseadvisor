@@ -1,9 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
+// import './index.css';
 import App from './components/App';
 // import registerServiceWorker from './registerServiceWorker';
-import Semester from './components/Semester';
 import Profile from './components/Profile';
 import Register from './components/Register';
 import Major from './components/Major';

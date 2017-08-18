@@ -86,6 +86,8 @@ app.post('/api/updatecourse', function(req, res){
 })
 
 app.post('/api/deletecourse', function(req, res){
+  console.log('REQ.BODY HERE, /api/deletecourse', req.body)
+  //req.body = { courses: { dept: 'ECON', number: '101' }, majorStatuses: {...} }, courses you want to remove
   User.findOne({_id: req.user._id}, function(err, userobj){
     let filteredArr = userobj.courses.filter((courseobj)=>
       (courseobj.dept !== req.body.courses.dept)
@@ -122,17 +124,21 @@ app.post('/api/testingmajor', function(req,res){
 
 app.get('/api/compute_algorithm', (req,res) => {
   const alg = require('./algorithm')
+  alg.buildMajorReq()
   User.findOne({_id: req.user._id})
   .then(user => {
-    const major = user.testingmajor
-    const courses = user.courses.sort(function(a, b){
+    let major = user.testingmajor
+    let courses = user.courses.sort(function(a, b){
       return a.num - b.num;
     })
     // console.log('SERVER API/COMPUTE_ALGO MAJOR', major)
     const retObj = alg.newreturncourses(user, courses)
     // console.log('RETOBJ here', retObj) // this works
-    console.log('RETOBJ>MAJORST', retObj.majorStatuses[0])
+    // user.majorStatuses = retObj.majorStatuses
+    // user.save()
+    console.log('********/api/compute_algorithm user here, hopefully w/ majorStatuses', JSON.stringify(retObj.majorStatuses))
     res.json({
+      // user: user,
       majorStatuses: retObj.majorStatuses,
       completedPercentage: retObj.completedPercentage,
       incompleteSetCount: retObj.incompleteSetCount,
@@ -146,7 +152,7 @@ app.get('/api/compute_algorithm', (req,res) => {
 
 app.post('/login', passport.authenticate('local', {failureRedirect: '/login'}),
 function(req, res){
-  res.redirect('/users/' + req.user.username)
+  res.redirect('/profile/' + req.user.username)
 });
 passport.authenticate('local', { failureFlash: 'Invalid username or password.' });
 app.get('/login', (req,res) => {
