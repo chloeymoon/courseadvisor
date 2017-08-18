@@ -21,9 +21,8 @@ class Major extends React.Component {
     };
   }
 
-  //TESTINGMAJOR updated in this.state, onChange from dropdown
   majorSave(event, index, value){
-    fetch('api/testingmajor', {
+    fetch('/api/testingmajor', {
       method: 'POST',
       credentials: 'include',
       headers: {
@@ -56,7 +55,7 @@ class Major extends React.Component {
       },
       body: JSON.stringify({
         courses: this.state.courses,
-        testingmajor: this.state.testingmajor //no use b/c server side sents userobj.course
+        // testingmajor: this.state.testingmajor //no use b/c server side sents userobj.course
       })
     }).then((response)  => {
       console.log('from Major.js, resp for api/getuser here', response);
@@ -69,7 +68,7 @@ class Major extends React.Component {
 
   render(){
     return (
-      <div className="background">
+      <div>
         <div>
           {/* <Link to="/logout">Log Out</Link> */}
           <h1>Pick a major</h1>

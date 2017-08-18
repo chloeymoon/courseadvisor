@@ -9,7 +9,7 @@ import TextField from 'material-ui/TextField';
 import DropDownMenu from 'material-ui/DropDownMenu';
 import MenuItem from 'material-ui/MenuItem';
 
-require('../css/profile.css');
+// require('../css/profile.css');
 
 const styles = {
   nopadding :{
