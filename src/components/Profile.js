@@ -81,10 +81,12 @@ const styles = {
     // margin: 'auto',
     backgroundColor: '#F5F5F5',
     width: 300,
-    // height: 100,
+    height: 120,
     flexBasis: 'content',
     alignItems: 'center ',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    flexDirection: 'column',
+    padding: 0
   }
 };
 
@@ -123,19 +125,19 @@ class Profile extends React.Component {
   handleDeptChange(key, event, index, value) {
     const newDept = value;
     const coursesCopy = Object.assign({}, this.state.courses);
-    console.log('value here', value);
-    console.log('newDept here', newDept);
-    console.log('coursesCopy here + key', coursesCopy, key);
+    // console.log('value here', value);
+    // console.log('newDept here', newDept);
+    // console.log('coursesCopy here + key', coursesCopy, key);
     coursesCopy[key].dept = newDept;
     this.setState({courses: coursesCopy});
-    console.log('new dept added', coursesCopy);
+    // console.log('new dept added', coursesCopy);
   }
   handleCourseNumChange(key, e) {
     const newNum = e.target.value;
     const coursesCopy = Object.assign({}, this.state.courses);
     coursesCopy[key].number = newNum;
     this.setState({courses: coursesCopy});
-    console.log('new num added', coursesCopy);
+    // console.log('new num added', coursesCopy);
   }
   handleSave(key){
     console.log('this.state.courses updated:', this.state.courses);
@@ -263,23 +265,33 @@ class Profile extends React.Component {
             <div style={styles.reqcolumn}>
             <h2>Completed</h2>
             {this.state.majorStatuses.completed.map(set => {
+                // if(set.type==="set"){
                 if(set.type==="set"){
-              //     return <ul style={styles.reqset} className="nopadding">{
-              //   if(set.type.set.ALL){
-              //     <p>{set.rules.ALL} level course</p>
-              //   }
-              //   if(set.type.set.OR) {
-              //     <p>Or {set.rules.OR}</p>
-              //   }
-              //   if(set.type.set.NOT){
-              //     <p>Not {set.type.set.NOR}</p>
-              //   }
-              // }</ul>
-                return(
-                    <ul style={styles.reqset} className="nopadding"><p>{set.rules.ALL} level course, NOT {set.rules.NOT}, OR {set.rules.OR}
-                    </p></ul>
-                );
-              } else return(
+                if(set.rules.ALL){
+                  if(set.rules.OR){
+                    if(set.rules.NOT){
+                      return (<ul style={styles.reqset} className="nopadding">
+                        <p>{set.rules.ALL} level </p><br />
+                        <p>OR {set.rules.OR}</p><br />
+                        <p>NOT {set.rules.NOT}</p>
+                      </ul>)
+                    } else return (<ul style={styles.reqset} className="nopadding">
+                      <p>{set.rules.ALL} level </p><br />
+                      <p>OR {set.rules.OR}</p><br />
+                    </ul>)
+                  } else if(set.rules.NOT){
+                    return(<ul style={styles.reqset} className="nopadding">
+                      <p>{set.rules.ALL} level </p>
+                      <p>NOT {set.rules.NOT}</p>
+                    </ul>)
+                  } else if(set.rules.OR){
+                    return(<ul style={styles.reqset} className="nopadding">
+                      <p>{set.rules.ALL} level </p>
+                      <p> One of : {set.rules.NOT}</p>
+                    </ul>)
+                  } return(<ul style={styles.reqset} className="nopadding"><p>{set.rules.ALL} level </p></ul>)
+                }
+                } else return( // explicit
                   <ul style={styles.reqset} className="nopadding"><p>{set.course}</p></ul>
               );
             })
@@ -290,14 +302,33 @@ class Profile extends React.Component {
             {this.state.majorStatuses.incompleted.map(set => {
               // console.log('req for incompleted', set);
               if(set.type==="set"){
-                return(
-                      <ul style={styles.reqset} className="nopadding"><p>{set.rules.ALL} level course, NOT {set.rules.NOT}, OR {set.rules.OR}
-                      </p></ul>
-                );
-              } return(
-                    <ul style={styles.reqset} className="nopadding"><p>{set.course}</p></ul>
-              );
-
+              if(set.rules.ALL){
+                if(set.rules.OR){
+                  if(set.rules.NOT){
+                    return (<ul style={styles.reqset} className="nopadding">
+                      <p>{set.rules.ALL} level </p><br />
+                      <p>OR {set.rules.OR}</p><br />
+                      <p>NOT {set.rules.NOT}</p>
+                    </ul>)
+                  } else return (<ul style={styles.reqset} className="nopadding">
+                    <p>{set.rules.ALL} level </p><br />
+                    <p>OR {set.rules.OR}</p><br />
+                  </ul>)
+                } else if(set.rules.NOT){
+                  return(<ul style={styles.reqset} className="nopadding">
+                    <p>{set.rules.ALL} level </p>
+                    <p>NOT {set.rules.NOT}</p>
+                  </ul>)
+                } else if(set.rules.OR){
+                  return(<ul style={styles.reqset} className="nopadding">
+                    <p>{set.rules.ALL} level </p>
+                    <p> One of : {set.rules.NOT}</p>
+                  </ul>)
+                } return(<ul style={styles.reqset} className="nopadding"><p>{set.rules.ALL} level </p></ul>)
+              }
+              } else return( // explicit
+                <ul style={styles.reqset} className="nopadding"><p>{set.course}</p></ul>
+            );
             })
             }
           </div>
